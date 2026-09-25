@@ -1,0 +1,6 @@
+# Product source files (paid PDFs/drafts) — not for the public site repo
+DEVOCIONAL PEQUENOS PASSOS NA BÍBLIA/
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
