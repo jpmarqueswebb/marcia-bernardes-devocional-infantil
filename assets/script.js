@@ -22,12 +22,100 @@ document.querySelectorAll(".lottie-icon[data-lottie]").forEach((el) => {
     track1.insertAdjacentHTML("beforeend", groupHTML);
   }
   track2.innerHTML = track1.innerHTML;
-
-  const pxPerSecond = 28;
-  const duration = (track1.scrollWidth / pxPerSecond).toFixed(1) + "s";
-  track1.style.animationDuration = duration;
-  track2.style.animationDuration = duration;
 })();
+
+/**
+ * Turns an auto-scrolling two-track marquee into one the user can also
+ * click-and-drag (mouse) or swipe (touch) left/right, seamlessly wrapping
+ * between the two identical tracks.
+ */
+function initDraggableMarquee(container, pxPerSecond) {
+  if (!container) return;
+  const track = container.children[0];
+  if (!track) return;
+
+  container.classList.add("draggable-marquee");
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const speed = reduceMotion ? 0 : pxPerSecond;
+
+  const wrapWidth = () => {
+    const gap = parseFloat(getComputedStyle(container).gap) || 0;
+    return track.getBoundingClientRect().width + gap;
+  };
+
+  let paused = false;
+  let dragging = false;
+  let startX = 0;
+  let startScroll = 0;
+  let lastTime = null;
+  let resumeTimer = null;
+
+  function pause() {
+    paused = true;
+    clearTimeout(resumeTimer);
+  }
+  function scheduleResume(delay) {
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => { paused = false; }, delay);
+  }
+
+  function tick(ts) {
+    if (!paused && speed > 0 && lastTime != null) {
+      const dt = (ts - lastTime) / 1000;
+      const ww = wrapWidth();
+      let next = container.scrollLeft + speed * dt;
+      if (ww > 0 && next >= ww) next -= ww;
+      container.scrollLeft = next;
+    }
+    lastTime = ts;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  container.addEventListener("mouseenter", pause);
+  container.addEventListener("mouseleave", () => scheduleResume(300));
+
+  container.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "mouse") return;
+    dragging = true;
+    pause();
+    startX = event.clientX;
+    startScroll = container.scrollLeft;
+    container.classList.add("is-dragging");
+    container.setPointerCapture(event.pointerId);
+  });
+  container.addEventListener("pointermove", (event) => {
+    if (!dragging) return;
+    const ww = wrapWidth();
+    let next = startScroll - (event.clientX - startX);
+    if (ww > 0) next = ((next % ww) + ww) % ww;
+    container.scrollLeft = next;
+  });
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    container.classList.remove("is-dragging");
+    scheduleResume(1000);
+  }
+  container.addEventListener("pointerup", endDrag);
+  container.addEventListener("pointercancel", endDrag);
+  container.addEventListener("pointerleave", endDrag);
+
+  container.addEventListener("touchstart", pause, { passive: true });
+  container.addEventListener("touchend", () => scheduleResume(1000), { passive: true });
+
+  container.addEventListener("scroll", () => {
+    if (dragging) return;
+    const ww = wrapWidth();
+    if (ww <= 0) return;
+    if (container.scrollLeft >= ww) container.scrollLeft -= ww;
+    else if (container.scrollLeft < 0) container.scrollLeft += ww;
+  });
+}
+
+initDraggableMarquee(document.querySelector(".marquee"), 60);
+initDraggableMarquee(document.querySelector(".offer-strip"), 28);
 
 (function () {
   if (!window.gsap || !window.ScrollTrigger) return;

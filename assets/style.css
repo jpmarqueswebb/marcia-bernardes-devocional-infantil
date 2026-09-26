@@ -288,15 +288,29 @@ a { color: inherit; text-decoration: none; }
   gap: 24px;
   width: max-content;
   padding-left: 24px;
-  animation: marquee-scroll 48s linear infinite;
 }
-.marquee:hover .marquee-track,
-.marquee:focus-within .marquee-track {
-  animation-play-state: paused;
+
+/* Draggable marquee — auto-scroll driven by JS scrollLeft so it can also be dragged/swiped */
+.draggable-marquee {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  cursor: grab;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
-@keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-100% - 24px)); }
+.draggable-marquee::-webkit-scrollbar { display: none; }
+.draggable-marquee.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .carousel-card {
   flex: 0 0 280px;
@@ -323,10 +337,6 @@ a { color: inherit; text-decoration: none; }
   .carousel-card { flex-basis: 220px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
-  .marquee { overflow-x: auto; }
-}
 
 .teo-note {
   display: flex;
@@ -486,7 +496,6 @@ a { color: inherit; text-decoration: none; }
   right: 50%;
   margin-left: -53vw;
   margin-right: -53vw;
-  overflow: hidden;
   background: var(--foreground);
   transform: rotate(-1.2deg);
   margin-top: 36px;
@@ -497,7 +506,6 @@ a { color: inherit; text-decoration: none; }
   flex-shrink: 0;
   width: max-content;
   padding: 10px 0;
-  animation: offer-strip-scroll 22s linear infinite;
 }
 .offer-strip-track span {
   color: var(--primary-foreground);
@@ -508,13 +516,6 @@ a { color: inherit; text-decoration: none; }
   padding: 0 18px;
   white-space: nowrap;
   opacity: 0.9;
-}
-@keyframes offer-strip-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .offer-strip-track { animation: none; }
 }
 
 /* Pricing */
@@ -816,10 +817,10 @@ a { color: inherit; text-decoration: none; }
     position: static;
     width: 100%;
     height: auto;
-    aspect-ratio: 1158 / 1359;
-    max-height: 78vh;
+    aspect-ratio: 1158 / 950;
+    max-height: 58vh;
     object-fit: cover;
-    object-position: 50% 50%;
+    object-position: 50% 0%;
   }
   .hero-scrim { display: none; }
   .hero-inner { max-width: none; padding: 32px 32px 0; }
