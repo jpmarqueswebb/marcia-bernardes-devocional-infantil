@@ -805,25 +805,30 @@ a { color: inherit; text-decoration: none; }
 /* Responsive */
 @media (max-width: 860px) {
   .hero {
-    min-height: auto;
-    display: block;
-    padding: 0 0 48px;
-  }
-  .hero picture {
-    display: block;
-    width: 100%;
+    min-height: 92vh;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 0 44px;
   }
   .hero-bg {
-    position: static;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
-    aspect-ratio: 1158 / 950;
-    max-height: 58vh;
+    height: 100%;
     object-fit: cover;
-    object-position: 50% 0%;
+    object-position: 50% 18%;
+    z-index: -2;
   }
-  .hero-scrim { display: none; }
-  .hero-inner { max-width: none; padding: 32px 32px 0; }
+  .hero-scrim {
+    width: 100%;
+    background: linear-gradient(180deg,
+      rgba(253, 251, 247, 0) 0%,
+      rgba(253, 251, 247, 0) 8%,
+      rgba(253, 251, 247, 0.94) 20%,
+      var(--background) 30%,
+      var(--background) 100%);
+  }
+  .hero-inner { max-width: none; padding: 0 24px; }
   .hero-copy { max-width: none; }
   .benefit-grid { grid-template-columns: repeat(2, 1fr); }
   .highlight-row { grid-template-columns: 1fr; }
