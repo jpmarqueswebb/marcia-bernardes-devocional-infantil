@@ -605,6 +605,23 @@ a { color: inherit; text-decoration: none; }
   color: var(--primary);
   letter-spacing: -0.01em;
 }
+.price-now {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+.price-pix {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+.price-installments {
+  font-size: 0.98rem;
+  color: var(--muted-foreground);
+}
+.price-card-featured .price-pix { color: var(--secondary); }
+.price-card-featured .price-installments { color: rgba(255, 248, 239, 0.7); }
 .price-features {
   list-style: none;
   padding: 0;
@@ -844,4 +861,6 @@ a { color: inherit; text-decoration: none; }
   .benefit-grid { grid-template-columns: 1fr; }
   .cta-group { flex-direction: column; }
   .btn-lg { width: 100%; }
+  .price-new { font-size: 1.9rem; }
+  .price-now { flex-direction: column; align-items: flex-start; gap: 2px; }
 }
